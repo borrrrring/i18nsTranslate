@@ -9,3 +9,5 @@ folder should be clear after app launch, don't click "translate it!" button agai
 setup your own apikey
 
 setup any language as you like
+
+language code [https://i18ns.com/zh/languagecode.html](https://i18ns.com/zh/languagecode.html)
