@@ -25,7 +25,8 @@ class ViewController: NSViewController {
         // Do any additional setup after loading the view.
 //        textView.textStorage?.append(NSAttributedString(string: "自动\n手动", attributes: [.foregroundColor: NSColor.white]))
         
-        textField.stringValue = "en,zh_TW,zh"
+        textField.stringValue = "en,zh_TW"
+        apikey = ""
         clearAllFiles()
         textField.delegate = self
         apikeyTf.delegate = self
@@ -63,24 +64,36 @@ class ViewController: NSViewController {
                     guard let path = NSSearchPathForDirectoriesInDomains(.desktopDirectory, .userDomainMask, true).first, let keys = dic[key]?.keys else { return }
                     
                     var string = ""
-                    if FileManager.default.fileExists(atPath: path.appending("/translation/\(key).text")) {
-                        string = try! String(contentsOfFile: path.appending("/translation/\(key).text"), encoding: .utf8)
+                    if FileManager.default.fileExists(atPath: path.appending("/translation/\(key).txt")) {
+                        string = try! String(contentsOfFile: path.appending("/translation/\(key).txt"), encoding: .utf8)
                     }
 
                     if keys.count > 1 {
-                        string += "// ##################请手动删除不需要的翻译##################\n"
+                        string += "\n"
                     }
                     for k in keys {
                         guard let value = dic[key]?[k] else { return }
-                        string += "\"\(value)\" = \"\(k)\";\n"
+                        string += "\"\(value)\"=\"\(k)\";\n"
                     }
                     if keys.count > 1 {
                         string += "\n"
                     }
-                    try? (string as NSString).write(to: URL(fileURLWithPath: path.appending("/translation/\(key).text")), atomically: true, encoding: NSUTF8StringEncoding)
+                    try? (string as NSString).write(to: URL(fileURLWithPath: path.appending("/translation/\(key).txt")), atomically: true, encoding: NSUTF8StringEncoding)
                 }
             })
             
+        }
+        
+        guard let path = NSSearchPathForDirectoriesInDomains(.desktopDirectory, .userDomainMask, true).first else { return }
+        NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: path.appending("/translation"))
+    }
+    
+    
+    @IBAction func languageAction(_ sender: Any) {
+        let url = URL(string: "https://i18ns.com/zh/languagecode.html")!
+        if NSWorkspace.shared.open(url) {
+            print("default browser was successfully opened")
+
         }
     }
     
